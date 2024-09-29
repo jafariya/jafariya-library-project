@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init db" author="jafariya">
+        <sql>
+            Create table if not exists author (
+            id bigserial PRIMARY KEY,
+            name varchar NOT NULL,
+            surname varchar NOT NULL
+            );
+
+            Create table if not exists genre (
+            id bigserial PRIMARY KEY,
+            name varchar NOT NULL
+            );
+
+            Create table if not exists book (
+            id bigserial PRIMARY KEY,
+            name varchar NOT NULL,
+            genre_id bigint NOT NULL,
+            FOREIGN KEY (genre_id) REFERENCES genre (id)
+            );
+
+            Create table if not exists author_book (
+            book_id bigint NOT NULL,
+            author_id bigint NOT NULL,
+            FOREIGN KEY (book_id) REFERENCES book (id),
+            FOREIGN KEY (author_id) REFERENCES author (id)
+            );
+
+            Insert into author(name, surname) values
+            ('Jack', 'London'),
+            ('Agatha', 'Christie'),
+            ('Theodore', 'Dreiser'),
+            ('Victor', 'Hugo'),
+            ('Franz', 'Kafka');
+
+
+            Insert into genre(name) values
+            ('Adventure'),
+            ('Mystery'),
+            ('Tragedy'),
+            ('Historical'),
+            ('Absurdist');
+
+            Insert into book(name, genre_id) values
+            ('The Call of the Wild', 1), -- Adventure
+            ('Murder on the Orient Express', 2), -- Mystery
+            ('An American Tragedy', 3), -- Tragedy
+            ('Les Miserables', 4), -- Historical
+            ('The Metamorphosis', 5); -- Absurdist
+
+
+
+            Insert into author_book(book_id, author_id) values
+            (1, 1), -- "The Call of the Wild" by Jack London
+            (2, 2), -- "Murder on the Orient Express" by Agatha Christie
+            (3, 3), -- "An American Tragedy" by Theodore Dreiser
+            (4, 4), -- "Les Miserables" by Victor Hugo
+            (5, 5); -- "The Metamorphosis" by Franz Kafka
+
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>
