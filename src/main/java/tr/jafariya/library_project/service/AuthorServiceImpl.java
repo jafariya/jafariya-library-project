@@ -1,10 +1,16 @@
 package tr.jafariya.library_project.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import tr.jafariya.library_project.dto.AuthorDto;
 import tr.jafariya.library_project.dto.BookDto;
 import tr.jafariya.library_project.model.Author;
+import tr.jafariya.library_project.model.Book;
 import tr.jafariya.library_project.repository.AuthorRepository;
 
 import java.util.List;
@@ -25,6 +31,41 @@ public class AuthorServiceImpl implements AuthorService{
         Author author = authorRep.findById(id).orElseThrow();
         return convertEntityToDto(author);
     }
+
+
+/*
+    public AuthorDto getByNameV2(String name) {
+        Author author = authorRep.findAuthorByNameBySql(name)
+                .orElseThrow(() -> new RuntimeException("Author not found"));
+        return convertEntityToDto(author);
+    } */
+
+    @Override
+    public AuthorDto getByNameV2(String name) {
+        Author author = authorRep.findAuthorByNameBySql(name).orElseThrow();
+        return convertEntityToDto(author);
+    }
+
+    @Override
+    public AuthorDto getAuthorByNameV1(String name) {
+         Author a = authorRep.findAuthorByName(name).orElseThrow();
+        return convertEntityToDto(a);
+    }
+
+    @Override
+    public AuthorDto getAuthorByNameV3(String name) {
+        Specification<Author> authorSpecification = Specification.where(new Specification<Author>() {
+            @Override
+            public Predicate toPredicate(Root<Author> root,
+                                         CriteriaQuery<?> query,
+                                         CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("name"), name);
+            }
+        });
+        Author a = authorRep.findOne((authorSpecification)).orElseThrow();
+        return convertEntityToDto(a);
+    }
+
 
     private AuthorDto convertEntityToDto(Author author) {
         List<BookDto> bookDtoList = author.getBooks()
