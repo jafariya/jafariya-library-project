@@ -7,7 +7,9 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import tr.jafariya.library_project.dto.AuthorCreateDto;
 import tr.jafariya.library_project.dto.AuthorDto;
+import tr.jafariya.library_project.dto.AuthorUpdateDto;
 import tr.jafariya.library_project.dto.BookDto;
 import tr.jafariya.library_project.model.Author;
 import tr.jafariya.library_project.model.Book;
@@ -66,16 +68,50 @@ public class AuthorServiceImpl implements AuthorService{
         return convertEntityToDto(a);
     }
 
+    @Override
+    public AuthorDto createAuthor(AuthorCreateDto authorCreateDto) {
+        Author author = authorRep.save(convertDtoToEntity(authorCreateDto));
+        AuthorDto authorDto = convertEntityToDto(author);
+        return authorDto;
+    }
+
+    @Override
+    public AuthorDto updateAuthor(AuthorUpdateDto authorUpdateDto) {
+        Author author = authorRep.findById(authorUpdateDto.getId()).orElseThrow();
+        author.setName(authorUpdateDto.getName());
+        author.setSurname(authorUpdateDto.getSurname());
+        Author savedAuthor = authorRep.save(author);
+        AuthorDto authorDto = convertEntityToDto(savedAuthor);
+        return authorDto;
+    }
+
+    @Override
+    public void deleteAuthor(Long id) {
+        authorRep.deleteById(id);
+    }
+
+    private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {
+        return Author.builder()
+                .name(authorCreateDto.getName())
+                .surname(authorCreateDto.getSurname())
+                .build();
+    }
+
 
     private AuthorDto convertEntityToDto(Author author) {
-        List<BookDto> bookDtoList = author.getBooks()
-                .stream()
+        List<BookDto> bookDtoList = author.getBooks().stream()
                 .map(book -> BookDto.builder()
                         .genre(book.getGenre().getName())
                         .name(book.getName())
                         .id(book.getId())
                         .build()
                 ).toList();
+
+
+        if (bookDtoList.isEmpty()) {
+            bookDtoList = null;
+        }
+
 
         AuthorDto authorDto = AuthorDto.builder()
                 .id(author.getId())

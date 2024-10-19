@@ -1,10 +1,7 @@
 package tr.jafariya.library_project.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -13,6 +10,7 @@ import java.util.Set;
 @Getter
 @Builder
 @Entity
+@Setter
 
 public class Book {
     @Id
@@ -27,6 +25,7 @@ public class Book {
     @JoinColumn(name = "genre_id") //outter key for DB
     private Genre genre;
 
+
     @ManyToMany
     @JoinTable(
             name = "author_book",
@@ -34,6 +33,5 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id")
     )
     private Set<Author> authors;
-
 
 }
