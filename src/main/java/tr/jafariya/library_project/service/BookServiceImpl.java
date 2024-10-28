@@ -13,6 +13,7 @@ import tr.jafariya.library_project.repository.GenreRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,12 @@ public class BookServiceImpl implements BookService {
         Book savedBook = bookRepository.save(book);
         BookDto bookDto = convertEntityToDto(savedBook);
         return bookDto;
+    }
+
+    @Override
+    public List<BookDto> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
     @Override

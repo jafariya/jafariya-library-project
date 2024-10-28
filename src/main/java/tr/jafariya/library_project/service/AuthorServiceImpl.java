@@ -16,6 +16,7 @@ import tr.jafariya.library_project.model.Book;
 import tr.jafariya.library_project.repository.AuthorRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -88,6 +89,12 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public void deleteAuthor(Long id) {
         authorRep.deleteById(id);
+    }
+
+    @Override
+    public List<AuthorDto> getAllAuthors() {
+        List<Author> authors = authorRep.findAll();
+        return authors.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
     private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {

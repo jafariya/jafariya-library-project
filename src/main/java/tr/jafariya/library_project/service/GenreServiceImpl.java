@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import tr.jafariya.library_project.dto.AuthorDto;
 import tr.jafariya.library_project.dto.BookDto;
 import tr.jafariya.library_project.dto.GenreDto;
+import tr.jafariya.library_project.model.Book;
 import tr.jafariya.library_project.model.Genre;
 import tr.jafariya.library_project.repository.GenreRepository;
 
@@ -22,6 +23,12 @@ public class GenreServiceImpl implements GenreService {
         Genre genre = genreRep.findById(id)
                 .orElseThrow(() -> new RuntimeException(" " + id));
         return convertEntityToDto(genre);
+    }
+
+    @Override
+    public List<GenreDto> getAllGenres() {
+        List<Genre> genres = genreRep.findAll();
+        return genres.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
     private GenreDto convertEntityToDto(Genre genre) {

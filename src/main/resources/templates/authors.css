@@ -1,0 +1,52 @@
+body {
+    font-family: "Lato", sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #865;
+}
+
+.responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.responsive-table thead th {
+    background-color: #007bff;
+    color: #ffffff;
+    text-align: left;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.responsive-table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.responsive-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.responsive-table ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.responsive-table li {
+    font-size: 14px;
+}

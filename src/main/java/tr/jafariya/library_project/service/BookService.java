@@ -4,9 +4,12 @@ import tr.jafariya.library_project.dto.BookCreateDto;
 import tr.jafariya.library_project.dto.BookDto;
 import tr.jafariya.library_project.dto.BookUpdateDto;
 
+import java.util.List;
+
 public interface BookService {
     BookDto getBookByNameV1(String name);
     BookDto createBook(BookCreateDto bookCreateDto);
     BookDto updateBook(BookUpdateDto bookUpdateDto);
     void deleteBook(Long id);
+    List<BookDto> getAllBooks();
 }

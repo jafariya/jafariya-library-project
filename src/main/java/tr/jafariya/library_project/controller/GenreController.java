@@ -1,20 +1,26 @@
 package tr.jafariya.library_project.controller;
 
+import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 import tr.jafariya.library_project.dto.GenreDto;
-import tr.jafariya.library_project.service.AuthorService;
+import tr.jafariya.library_project.service.BookService;
 import tr.jafariya.library_project.service.GenreService;
 
-@RestController
+import java.util.List;
+
+
+@Controller
 @RequiredArgsConstructor
 public class GenreController {
 
     private final GenreService genreService;
-    @GetMapping("/genre/{id}")
-    GenreDto getGenreById(@PathVariable("id") Long id) {
-        return genreService.getGenreById(id);
+
+    @GetMapping("/genres")
+    String getGenresView(Model model) {
+        List<GenreDto> genres = genreService.getAllGenres();
+        model.addAttribute("genres", genres);
+        return "genres";
     }
 }

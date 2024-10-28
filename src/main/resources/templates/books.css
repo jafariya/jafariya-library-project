@@ -1,0 +1,46 @@
+.responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.responsive-table th,
+.responsive-table td {
+    padding: 10px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.responsive-table th {
+    background-color: #95A5A6;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.responsive-table td {
+    background-color: #ffffff;
+}
+
+.responsive-table .col-id {
+    width: 10%;
+    text-align: center;
+}
+
+.responsive-table .col-name {
+    width: 60%;
+    text-align: left;
+}
+
+.responsive-table .col-genre {
+    width: 30%;
+    text-align: left;
+}
+
+.responsive-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.responsive-table tr:hover {
+    background-color: #f1f1f1;
+}
