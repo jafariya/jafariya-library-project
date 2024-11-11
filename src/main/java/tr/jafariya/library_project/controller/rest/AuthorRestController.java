@@ -1,5 +1,6 @@
 package tr.jafariya.library_project.controller.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tr.jafariya.library_project.dto.AuthorCreateDto;
@@ -38,12 +39,12 @@ private final AuthorService authorService;
     }
 
     @PostMapping("/author/create")
-    AuthorDto createAuthor(@RequestBody AuthorCreateDto authorCreateDto) {
+    AuthorDto createAuthor(@RequestBody @Valid AuthorCreateDto authorCreateDto) {
         return authorService.createAuthor(authorCreateDto);
     }
 
     @PutMapping("/author/update")
-    AuthorDto updateAuthor(@RequestBody AuthorUpdateDto authorUpdateDto) {
+    AuthorDto updateAuthor(@RequestBody @Valid AuthorUpdateDto authorUpdateDto) {
         return authorService.updateAuthor(authorUpdateDto);
     }
 

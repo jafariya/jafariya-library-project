@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import tr.jafariya.library_project.dto.AuthorCreateDto;
@@ -16,12 +17,16 @@ import tr.jafariya.library_project.model.Book;
 import tr.jafariya.library_project.repository.AuthorRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 @Service
-@RequiredArgsConstructor //will create constructor with only final fields
+@RequiredArgsConstructor
+@Slf4j
+//will create constructor with only final fields
 
 public class AuthorServiceImpl implements AuthorService{
 
@@ -31,8 +36,16 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public AuthorDto getAuthorById(Long id) {
-        Author author = authorRep.findById(id).orElseThrow();
-        return convertEntityToDto(author);
+        log.info("Try to find author by id {}", id);
+        Optional<Author> author = authorRep.findById(id);
+        if (author.isPresent()) {
+            AuthorDto authorDto = convertEntityToDto(author.get());
+            log.info("Author: {}", authorDto.toString());
+            return authorDto;
+        } else {
+            log.error("Author with id {} not found", id);
+            throw new NoSuchElementException("No value present");
+        }
     }
 
 
@@ -45,58 +58,86 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public AuthorDto getByNameV2(String name) {
-        Author author = authorRep.findAuthorByNameBySql(name).orElseThrow();
-        return convertEntityToDto(author);
+        log.info("Try to find author by name (V2) {}", name);
+        Author author = authorRep.findAuthorByNameBySql(name)
+                .orElseThrow(() -> {
+                    log.error("Author with name {} not found (V2)", name);
+                    return new RuntimeException("Author not found");
+                });
+        AuthorDto authorDto = convertEntityToDto(author);
+        log.info("Author found (V2): {}", authorDto.toString());
+        return authorDto;
     }
 
     @Override
     public AuthorDto getAuthorByNameV1(String name) {
-         Author a = authorRep.findAuthorByName(name).orElseThrow();
-        return convertEntityToDto(a);
+        log.info("Try to find author by name (V1) {}", name);
+        Author author = authorRep.findAuthorByName(name).orElseThrow(() -> {
+            log.error("Author with name {} not found (V1)", name);
+            return new RuntimeException("Author not found");
+        });
+        AuthorDto authorDto = convertEntityToDto(author);
+        log.info("Author found (V1): {}", authorDto.toString());
+        return authorDto;
     }
 
     @Override
     public AuthorDto getAuthorByNameV3(String name) {
+        log.info("Try to find author by name (V3) {}", name);
         Specification<Author> authorSpecification = Specification.where(new Specification<Author>() {
             @Override
-            public Predicate toPredicate(Root<Author> root,
-                                         CriteriaQuery<?> query,
-                                         CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<Author> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 return criteriaBuilder.equal(root.get("name"), name);
             }
         });
-        Author a = authorRep.findOne((authorSpecification)).orElseThrow();
-        return convertEntityToDto(a);
+        Author author = authorRep.findOne(authorSpecification).orElseThrow(() -> {
+            log.error("Author with name {} not found (V3)", name);
+            return new RuntimeException("Author not found");
+        });
+        AuthorDto authorDto = convertEntityToDto(author);
+        log.info("Author found (V3): {}", authorDto.toString());
+        return authorDto;
     }
 
     @Override
     public AuthorDto createAuthor(AuthorCreateDto authorCreateDto) {
+        log.info("Creating author with data {}", authorCreateDto.toString());
         Author author = authorRep.save(convertDtoToEntity(authorCreateDto));
         AuthorDto authorDto = convertEntityToDto(author);
+        log.info("Author created: {}", authorDto.toString());
         return authorDto;
     }
 
     @Override
     public AuthorDto updateAuthor(AuthorUpdateDto authorUpdateDto) {
-        Author author = authorRep.findById(authorUpdateDto.getId()).orElseThrow();
+        log.info("Updating author with data {}", authorUpdateDto.toString());
+        Author author = authorRep.findById(authorUpdateDto.getId()).orElseThrow(() -> {
+            log.error("Author with id {} not found for update", authorUpdateDto.getId());
+            return new RuntimeException("Author not found");
+        });
         author.setName(authorUpdateDto.getName());
         author.setSurname(authorUpdateDto.getSurname());
         Author savedAuthor = authorRep.save(author);
         AuthorDto authorDto = convertEntityToDto(savedAuthor);
+        log.info("Author updated: {}", authorDto.toString());
         return authorDto;
     }
 
     @Override
     public void deleteAuthor(Long id) {
+        log.info("Deleting author with id {}", id);
         authorRep.deleteById(id);
+        log.info("Author with id {} deleted", id);
     }
 
     @Override
     public List<AuthorDto> getAllAuthors() {
+        log.info("Fetching all authors");
         List<Author> authors = authorRep.findAll();
-        return authors.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+        List<AuthorDto> authorDtoList = authors.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+        log.info("Total authors found: {}", authorDtoList.size());
+        return authorDtoList;
     }
-
     private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {
         return Author.builder()
                 .name(authorCreateDto.getName())

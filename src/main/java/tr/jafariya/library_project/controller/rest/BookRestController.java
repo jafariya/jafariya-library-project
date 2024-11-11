@@ -1,6 +1,7 @@
 package tr.jafariya.library_project.controller.rest;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tr.jafariya.library_project.dto.*;
@@ -15,7 +16,7 @@ public class BookRestController {
 private final BookService bookService;
 
     @PostMapping("/book/create")
-    BookDto createAuthor(@RequestBody BookCreateDto bookCreateDto) {
+    BookDto createAuthor(@RequestBody @Valid BookCreateDto bookCreateDto) {
         return bookService.createBook(bookCreateDto);
     }
 
@@ -25,7 +26,7 @@ private final BookService bookService;
     }
 
     @PutMapping("/book/update")
-    BookDto updateBook(@RequestBody BookUpdateDto bookUpdateDto) {
+    BookDto updateBook(@RequestBody @Valid BookUpdateDto bookUpdateDto) {
         return bookService.updateBook(bookUpdateDto);
     }
 
