@@ -44,17 +44,11 @@ public class AuthorServiceImpl implements AuthorService{
             return authorDto;
         } else {
             log.error("Author with id {} not found", id);
-            throw new NoSuchElementException("No value present");
+            throw new IllegalStateException("No author present");
         }
     }
 
 
-/*
-    public AuthorDto getByNameV2(String name) {
-        Author author = authorRep.findAuthorByNameBySql(name)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        return convertEntityToDto(author);
-    } */
 
     @Override
     public AuthorDto getByNameV2(String name) {
@@ -82,16 +76,16 @@ public class AuthorServiceImpl implements AuthorService{
     }
 
     @Override
-    public AuthorDto getAuthorByNameV3(String name) {
-        log.info("Try to find author by name (V3) {}", name);
+    public AuthorDto getAuthorBySurname(String surname) {
+        log.info("Try to find author by surname (V3) {}", surname);
         Specification<Author> authorSpecification = Specification.where(new Specification<Author>() {
             @Override
             public Predicate toPredicate(Root<Author> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get("name"), name);
+                return criteriaBuilder.equal(root.get("surname"), surname);
             }
         });
         Author author = authorRep.findOne(authorSpecification).orElseThrow(() -> {
-            log.error("Author with name {} not found (V3)", name);
+            log.error("Author with surname {} not found (V3)", surname);
             return new RuntimeException("Author not found");
         });
         AuthorDto authorDto = convertEntityToDto(author);

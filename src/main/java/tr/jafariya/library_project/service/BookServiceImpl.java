@@ -131,7 +131,7 @@ public class BookServiceImpl implements BookService {
         BookDto bookDto = BookDto.builder()
                 .id(book.getId())
                 .name(book.getName())
-                .genre(book.getGenre().getName())
+                .genre(book.getGenre() != null ? book.getGenre().getName() : null)
                 .authors(authorDtoList)
                 .build();
         log.info("Converted BookDto: {}", bookDto.toString());

@@ -16,10 +16,13 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //shows how will be initialized in table
     public Long id;
+
     @Column(nullable = false) //no possible being empty
     private String name;
+
     @Column(nullable = false)
     private String surname;
+
     @ManyToMany(mappedBy = "authors")
     private Set<Book> books;
 

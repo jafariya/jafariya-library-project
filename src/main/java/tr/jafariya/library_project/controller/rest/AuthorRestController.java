@@ -17,25 +17,20 @@ private final AuthorService authorService;
     AuthorDto getAuthorById(@PathVariable("id") Long id) {
         return authorService.getAuthorById(id);
     }
-/*
-    @GetMapping("/v2")
-    public AuthorDto getAuthorByNameV2(@RequestParam("name") String name) {
-        return authorService.getByNameV2(name);
-    } */
 
     @GetMapping("/author/v1")
-    AuthorDto getBookByName(@RequestParam("name") String name) {
+    AuthorDto getAuthorByNameV1(@RequestParam("name") String name) {
         return authorService.getAuthorByNameV1(name);
     }
 
     @GetMapping("/author/sql")
-    AuthorDto getBookByNameV2(@RequestParam("name") String name) {
+    AuthorDto getAuthorByNameV2(@RequestParam("name") String name) {
         return authorService.getByNameV2(name);
     }
 
-    @GetMapping("/author/v3")
-    AuthorDto getAuthorByNameV3(@RequestParam("name") String name) {
-        return authorService.getAuthorByNameV3(name);
+    @GetMapping("/author/surname")
+    AuthorDto getAuthorBySurname(@RequestParam("surname") String surname) {
+        return authorService.getAuthorBySurname(surname);
     }
 
     @PostMapping("/author/create")
